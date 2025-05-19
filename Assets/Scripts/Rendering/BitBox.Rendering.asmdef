@@ -1,0 +1,16 @@
+{
+    "name": "BitBox.Rendering",
+    "rootNamespace": "BitBox",
+    "references": [
+        "GUID:a425efabf330221439afcedceaf8fab2"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

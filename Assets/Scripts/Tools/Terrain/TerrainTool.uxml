@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Toggle label="Active" name="ActiveToggle" />
+    <ui:SliderInt label="Size" value="2" high-value="16" name="SizeSlider" low-value="4" show-input-field="true" fill="true" />
+    <ui:SliderInt label="Height" value="1" high-value="20" name="HeightSlider" fill="true" show-input-field="true" />
+</ui:UXML>
