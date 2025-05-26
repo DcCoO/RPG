@@ -6,16 +6,23 @@ public partial class HeightmapToMesh
 {
     public class Node
     {
+        public readonly int Id;
         public readonly int Row; // Linha
         public readonly int Column; // Coluna
         public readonly Dictionary<(int, int), Node> Neighbors;
 
-        public Node(int row, int column)
+        public Node(int id, int row, int column)
         {
+            Id = id;
             Row = row;
             Column = column;
             Neighbors = new();
         }
+        
+        private static int _id = 0;
+        public static int GetId() => _id++;
+        
+        public static void ResetId() => _id = 0;
     }
 
     private Dictionary<(int, int), Node> _graph;
@@ -41,9 +48,10 @@ public partial class HeightmapToMesh
         }
     }
 
-    private void BuildGraph(int[,] grid)
+    private void BuildGraph(int[,] grid, int height)
     {
         _graph = new();
+        Node.ResetId();
 
         for (int j = 0; j < Size; ++j) // linha
         {
@@ -58,7 +66,7 @@ public partial class HeightmapToMesh
                     var key = (row, col); // chave = (j, i)
                     if (!_graph.ContainsKey(key))
                     {
-                        _graph[key] = new Node(row, col);
+                        _graph[key] = new Node(Node.GetId(), row, col);
                         // Debug.Log($"Criando nó ({row}, {col})");
                     }
                 }
@@ -133,10 +141,10 @@ public partial class HeightmapToMesh
             }
         }
 
-        Debug.Log("Grafo criado com " + _graph.Count + " nodes");
         FillAdjacentyList();
         RemoveInternalEdges(grid);
         RemoveUselessNodes();
+        BuildBorders(grid, height);
     }
     
     private void FillAdjacentyList()
@@ -248,7 +256,7 @@ public partial class HeightmapToMesh
     
     private void SplitNode(Node node, int[,] grid)
     {
-        Node newNode = new Node(node.Row, node.Column);
+        Node newNode = new Node( Node.GetId(), node.Row, node.Column);
         
         var topNeighbor = node.Neighbors.Values.First(neighbor => neighbor.Column == node.Column && neighbor.Row > node.Row);
         
@@ -310,6 +318,138 @@ public partial class HeightmapToMesh
             leftNeighbor.Neighbors[(rightNeighbor.Row, rightNeighbor.Column)] = rightNeighbor;
             
             _graph.Remove(position);
+        }
+    }
+    
+    private void BuildBorders(int[,] grid, int height)
+    {
+        Mesh mesh = new Mesh();
+        List<Vector3> vertices = new();
+        List<int> triangles = new();
+        
+        var mark = new Dictionary<int, bool>();
+        
+        foreach (var node in _graph.Values)
+        {
+            if (mark.ContainsKey(node.Id)) continue;
+            //print($"ORIGIN AT ({node.Row}, {node.Column}) = {grid[node.Row, node.Column]}");
+            bool clockwise = GetTriangleDirection(node, grid);
+            BuildBorders(vertices, triangles, node, mark, height, clockwise);
+        }
+        
+        mesh.vertices = vertices.ToArray();
+        mesh.triangles = triangles.ToArray();
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+        
+        GameObject border = new GameObject($"[{height}] Border");
+        border.transform.parent = transform;
+        border.transform.localPosition = Vector3.zero;
+        
+        border.AddComponent<MeshFilter>().mesh = mesh;
+        border.AddComponent<MeshRenderer>().sharedMaterial = WallMaterial;
+    }
+
+    private bool GetTriangleDirection(Node u, int[,] grid)
+    {
+        var v = u.Neighbors.Values.First();
+        
+        if (u.Row == v.Row)
+        {
+            return grid[u.Row, Mathf.Min(u.Column, v.Column)] is 0;
+        }
+        
+        if (u.Column == v.Column)
+        {
+            return grid[Mathf.Min(u.Row, v.Row), u.Column] is 0;
+        }
+
+        
+        if (u.Row < v.Row)
+        {
+            if (u.Column < v.Column)
+            {
+                print("(1) AAAAAAAA " + u.Row + ", " + u.Column + " -> " + v.Row + ", " + v.Column);
+                return grid[u.Row, u.Column] is (int)EDiagonalType.BottomRight;
+            }
+            else
+            {
+                print("(2) AAAAAAAA " + u.Row + ", " + u.Column + " -> " + v.Row + ", " + v.Column);
+                return grid[u.Row, u.Column - 1] is (int)EDiagonalType.TopRight;
+            }
+        }
+        else
+        {
+            if (u.Column < v.Column)
+            {
+                print("(3) AAAAAAAA " + u.Row + ", " + u.Column + " -> " + v.Row + ", " + v.Column);
+                return grid[v.Row, u.Column] is (int)EDiagonalType.BottomLeft;
+            }
+            else
+            {
+                print("(4) AAAAAAAA " + u.Row + ", " + u.Column + " -> " + v.Row + ", " + v.Column);
+                return grid[v.Row, v.Column] is (int)EDiagonalType.TopRight;
+            }
+        }
+    }
+    
+    private void BuildBorders(List<Vector3> vertices, List<int> triangles, Node origin, Dictionary<int, bool> mark, float height, bool clockwise)
+    {
+        mark[origin.Id] = true;
+        
+        Node next;
+        Node prev = origin;
+        
+        while (true)
+        {
+            next = prev.Neighbors.Values.FirstOrDefault(u => !mark.ContainsKey(u.Id));
+            if (next is null)
+            {
+                BuildRectangle(prev, origin, height, vertices, triangles, clockwise);
+                break;
+            }
+            
+            mark[next.Id] = true;
+            BuildRectangle(prev, next, height, vertices, triangles, clockwise);
+            prev = next;
+        }
+    }
+    
+    private void BuildRectangle(Node prev, Node next, float height, List<Vector3> vertices, List<int> triangles, bool clockwise)
+    {
+        Vector3 bottomLeft = new Vector3(prev.Column, 0, prev.Row);
+        Vector3 bottomRight = new Vector3(next.Column, 0, next.Row);
+        Vector3 topLeft = new Vector3(prev.Column, height, prev.Row);
+        Vector3 topRight = new Vector3(next.Column, height, next.Row);
+
+        // Index dos vértices no array
+        int baseIndex = vertices.Count;
+
+        // Adiciona os 4 vértices do quadrado da parede
+        vertices.Add(bottomLeft);  // 0
+        vertices.Add(bottomRight); // 1
+        vertices.Add(topLeft);     // 2
+        vertices.Add(topRight);    // 3
+
+        if (clockwise)
+        {
+            triangles.Add(baseIndex + 0);
+            triangles.Add(baseIndex + 1);
+            triangles.Add(baseIndex + 2);
+
+            triangles.Add(baseIndex + 3);
+            triangles.Add(baseIndex + 2);
+            triangles.Add(baseIndex + 1);
+        }
+        else
+        {
+            triangles.Add(baseIndex + 0);
+            triangles.Add(baseIndex + 2);
+            triangles.Add(baseIndex + 1);
+
+            triangles.Add(baseIndex + 2);
+            triangles.Add(baseIndex + 3);
+            triangles.Add(baseIndex + 1);    
         }
     }
 }

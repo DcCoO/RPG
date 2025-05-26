@@ -28,35 +28,38 @@ public partial class HeightmapToMesh : MonoBehaviour
     public int[,] _heightmap = 
     {
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0},
-        {0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0},
-        {0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,1,1,1,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+        {0,0,0,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,4,0,0,0,4,0,0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,0},
+        {0,0,0,4,0,0,0,4,0,0,0,0,0,0,0,0,0,0,4,0,4,0,0,0,0},
+        {0,0,0,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,4,0,0,4,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,2,0,2,0,0,4,4,4,4,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,4,4,4,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,4,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,4,4,4,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,4,0,4,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,2,0,2,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,4,4,0,0,0,0,0,2,2,2,0,0,0,0,0},
+        {0,0,0,0,2,2,2,0,0,0,0,4,4,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,2,0,0,0,0,0,0,4,4,4,4,4,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,2,0,0,0,0,0,0,4,0,0,0,4,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,2,2,2,2,0,0,2,4,4,4,4,4,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,2,0,0,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,4,4,4,4,4,0,2,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,4,0,0,0,4,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
     };
     
     //limitation: two diagonals cannot be adjacent
 
     public int Size => 25;
+    
+    public Material FloorMaterial;
+    public Material WallMaterial;
 
     void Start()
     {
@@ -77,16 +80,16 @@ public partial class HeightmapToMesh : MonoBehaviour
         foreach (var height in existingHeights)
         {
             var layer = FilterHeight(heightmap, height);
-            var diagonals = FindDiagonals(layer);
+            var diagonals = FindDiagonals(layer, height);
             var rectangles = CoverWithRectangles(layer);
             ApplyDiagonals(layer, diagonals, true);
             PrintGrid(layer);
             var rectangleDatas = rectangles.Select(x => new RectangleData(x, layer)).ToList();
-            BuildGraph(layer);
+            BuildGraph(layer, height);
             ApplyDiagonals(layer, diagonals, false);
             //foreach (var rectangle in rectangleDatas) print(rectangle);
             BuildSurface(rectangleDatas, diagonals, height);
-            return;
+            //return;
         }
     }
 
@@ -103,7 +106,7 @@ public partial class HeightmapToMesh : MonoBehaviour
             } 
         }
         
-        return existingHeights.OrderBy(x => x).ToList();
+        return existingHeights.OrderByDescending(x => x).ToList();
     }
 
     private int[,] FilterHeight(int[,] heightmap, int height)
@@ -121,7 +124,7 @@ public partial class HeightmapToMesh : MonoBehaviour
         return filteredHeightmap;
     }
 
-    private List<DiagonalData> FindDiagonals(int[,] heightmap)
+    private List<DiagonalData> FindDiagonals(int[,] heightmap, int height)
     {
         var diagonals = new List<DiagonalData>();
         for (int i = 0; i < Size; ++i)
@@ -129,8 +132,9 @@ public partial class HeightmapToMesh : MonoBehaviour
             for (int j = 0; j < Size; ++j)
             {
                 if (heightmap[i, j] != 0) continue;
+                if (_heightmap[i, j] > height) continue;    // Only check for diagonals in cells that are not occupied by a higher height
 
-                if (i == 8 && j == 4)
+                /*if (i == 8 && j == 4)
                 {
                     StringBuilder sb = new();
                     for (int r = -1; r <= 1; ++r)
@@ -144,7 +148,7 @@ public partial class HeightmapToMesh : MonoBehaviour
                     }
                     print(sb.ToString());
                     print(CheckDiagonal(heightmap, i, j, 1, 1));
-                }
+                }*/
                 
                 if (CheckDiagonal(heightmap, i, j, 1, 1)) diagonals.Add(new DiagonalData(i, j, EDiagonalType.TopRight));
                 else if (CheckDiagonal(heightmap, i, j, 1, -1)) diagonals.Add(new DiagonalData(i, j, EDiagonalType.TopLeft));
@@ -330,7 +334,7 @@ public partial class HeightmapToMesh : MonoBehaviour
         mesh.RecalculateBounds();
         
         surface.AddComponent<MeshFilter>().mesh = mesh;
-        surface.AddComponent<MeshRenderer>().sharedMaterial = GetComponent<MeshRenderer>().sharedMaterial;
+        surface.AddComponent<MeshRenderer>().sharedMaterial = FloorMaterial;
     }
     
     private void PrintGrid(int[,] grid)

@@ -151,7 +151,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cellSize: 1
-  Size: 11
+  FloorMaterial: {fileID: 2100000, guid: 14ca00cdf5110f548807dbb434744634, type: 2}
+  WallMaterial: {fileID: 2100000, guid: b5b5ce96cab20054aa0d01b2fcf3d73c, type: 2}
 --- !u!23 &39833829
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -360,7 +361,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &339103658
 Transform:
   m_ObjectHideFlags: 0

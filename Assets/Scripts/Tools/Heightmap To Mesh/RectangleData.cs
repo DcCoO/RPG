@@ -90,25 +90,21 @@ public class RectangleData
     
     private bool HasTopRightVertex(int[,] grid)
     {
-        if (Y == 7) Debug.Log("AAAAAAAAAA 1");
         // Right neighbor
         if (X + Width >= grid.GetLength(1)) return true;
         if (grid[Y, X + Width] is 0) return true;
         if (grid[Y, X + Width] is < 0 and not (int)EDiagonalType.TopLeft) return true;
         
-        if (Y == 7) Debug.Log("AAAAAAAAAA 2");
         // Top neighbor
         if (Y + Height >= grid.GetLength(0)) return true;
         if (grid[Y + Height, X] is 0) return true;
         if (grid[Y + Height, X] is < 0 and not (int)EDiagonalType.BottomRight) return true;
         
-        if (Y == 7) Debug.Log("AAAAAAAAAA 3");
         // Top right neighbor
         if (X + Width >= grid.GetLength(1) || Y + Height >= grid.GetLength(0)) return true;
         if (grid[Y + Height, X + Width] is 0) return true;
         if (grid[Y + Height, X + Width] is < 0 and not (int)EDiagonalType.BottomLeft) return true;
 
-        if (Y == 7) Debug.Log("AAAAAAAAAA 4");
         return false;
     }
 
