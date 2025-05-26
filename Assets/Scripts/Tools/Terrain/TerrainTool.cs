@@ -38,7 +38,7 @@ namespace BitBox.Tools.Terrain
                 Ray ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    _terrain = hit.collider.gameObject.GetComponent<Terrain>();
+                    if (!hit.collider.gameObject.TryGetComponent(out _terrain)) return;
                     cell = new TerrainCell(hit.point, _terrain);
                 }
                 else return;

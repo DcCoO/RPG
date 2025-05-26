@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using BitBox.Utils;
 using UnityEditor;
 using UnityEngine.Serialization;
@@ -24,23 +25,38 @@ public partial class HeightmapToMesh : MonoBehaviour
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
     };*/
     
-    public int[,] _heightmap = {
-        {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 5, 5, 5, 0, 0},
-        {0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 0},
-        {0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 0},
-        {0, 1, 1, 1, 1, 1, 5, 5, 5, 5, 0},
-        {0, 0, 1, 0, 0, 1, 5, 5, 5, 5, 0},
-        {0, 0, 1, 0, 0, 1, 3, 3, 3, 3, 0},
-        {0, 1, 1, 0, 0, 1, 3, 3, 3, 0, 0},
-        {0, 0, 1, 1, 1, 1, 3, 3, 0, 0, 0},
-        {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0}
+    public int[,] _heightmap = 
+    {
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0},
+        {0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0},
+        {0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,1,1,1,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
     };
     
     //limitation: two diagonals cannot be adjacent
 
-    public int Size = 11;
+    public int Size => 25;
 
     void Start()
     {
@@ -52,6 +68,11 @@ public partial class HeightmapToMesh : MonoBehaviour
 
     public void GenerateMesh(int[,] heightmap)
     {
+        // deve-se começar pelo mais alto
+        // as diagonais dos mais altos podem interferir com os mais baixos
+        // entao as diagonais devem ser salvas pois uma diagonal do mais alto cria uma diagonal oposta no mais baixo
+        // as diagonais de todos os niveis tem q ser salvas para os niveis abaixo saberem
+        // se numa celula que vai virar diagonal, ja existe uma celula mais alta ocupando, entao ela nao vira diagonal
         var existingHeights = GetExistingHeights(heightmap);
         foreach (var height in existingHeights)
         {
@@ -61,8 +82,9 @@ public partial class HeightmapToMesh : MonoBehaviour
             ApplyDiagonals(layer, diagonals, true);
             PrintGrid(layer);
             var rectangleDatas = rectangles.Select(x => new RectangleData(x, layer)).ToList();
+            BuildGraph(layer);
             ApplyDiagonals(layer, diagonals, false);
-            foreach (var rectangle in rectangleDatas) print(rectangle);
+            //foreach (var rectangle in rectangleDatas) print(rectangle);
             BuildSurface(rectangleDatas, diagonals, height);
             return;
         }
@@ -107,7 +129,23 @@ public partial class HeightmapToMesh : MonoBehaviour
             for (int j = 0; j < Size; ++j)
             {
                 if (heightmap[i, j] != 0) continue;
-                var sz = diagonals.Count;
+
+                if (i == 8 && j == 4)
+                {
+                    StringBuilder sb = new();
+                    for (int r = -1; r <= 1; ++r)
+                    {
+                        for (int c = -1; c <= 1; ++c)
+                        {
+                            sb.Append(heightmap[i + r, j + c]);
+                        }
+
+                        sb.AppendLine();
+                    }
+                    print(sb.ToString());
+                    print(CheckDiagonal(heightmap, i, j, 1, 1));
+                }
+                
                 if (CheckDiagonal(heightmap, i, j, 1, 1)) diagonals.Add(new DiagonalData(i, j, EDiagonalType.TopRight));
                 else if (CheckDiagonal(heightmap, i, j, 1, -1)) diagonals.Add(new DiagonalData(i, j, EDiagonalType.TopLeft));
                 else if (CheckDiagonal(heightmap, i, j, -1, 1)) diagonals.Add(new DiagonalData(i, j, EDiagonalType.BottomRight));
@@ -120,13 +158,27 @@ public partial class HeightmapToMesh : MonoBehaviour
 
     private bool CheckDiagonal(int[,] heightmap, int i, int j, int di, int dj)
     {
-        if (i + di < 0 || i + di >= Size || j + dj < 0 || j + dj >= Size) return false;
-        return heightmap[i + di, j] != 0 && heightmap[i, j + dj] != 0;
+        var positionsOf1 = new HashSet<(int, int)> { (i + di, j), (i, j + dj), (i + di, j + dj) };
+        var positionsOf0 = new HashSet<(int, int)> { (i - di, j), (i, j - dj) };
+
+        foreach (var position in positionsOf1)
+        {
+            if (position.Item1 < 0 || position.Item1 >= Size || position.Item2 < 0 || position.Item2 >= Size) return false;
+            if (heightmap[position.Item1, position.Item2] != 1) return false;
+        }
+        
+        foreach (var position in positionsOf0)
+        {
+            if (position.Item1 < 0 || position.Item1 >= Size || position.Item2 < 0 || position.Item2 >= Size) continue;
+            if (heightmap[position.Item1, position.Item2] != 0) return false;
+        }
+
+        return true;
     }
 
     private void ApplyDiagonals(int[,] grid, List<DiagonalData> diagonals, bool apply)
     {
-        foreach (var diagonal in diagonals) grid[diagonal.I, diagonal.J] = apply ? (int)diagonal.Type : 0;
+        foreach (var diagonal in diagonals) grid[diagonal.Row, diagonal.Column] = apply ? (int)diagonal.Type : 0;
     }
     
     private List<RectInt> CoverWithRectangles(int[,] map)
@@ -220,8 +272,8 @@ public partial class HeightmapToMesh : MonoBehaviour
         // 2. Adiciona as diagonais como triângulos
         foreach (var d in diagonals)
         {
-            int x = d.J;
-            int y = d.I;
+            int x = d.Column;
+            int y = d.Row;
 
             Vector3Int point0, point1, point2;
 

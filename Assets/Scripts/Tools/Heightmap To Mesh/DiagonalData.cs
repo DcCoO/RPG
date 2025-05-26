@@ -1,15 +1,13 @@
-
-
 public class DiagonalData
 {
-    public int I;
-    public int J;
+    public int Row;
+    public int Column;
     public EDiagonalType Type;
     
-    public DiagonalData(int i, int j, EDiagonalType type)
+    public DiagonalData(int row, int column, EDiagonalType type)
     {
-        I = i;
-        J = j;
+        Row = row;
+        Column = column;
         Type = type;
     }
 }
