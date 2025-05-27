@@ -7,80 +7,120 @@ using BitBox.Utils;
 using UnityEditor;
 using UnityEngine.Serialization;
 
-[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public partial class HeightmapToMesh : MonoBehaviour
 {
     public float _cellSize;
-    /*public int[,] _heightmap = {
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 5, 5, 5, 0, 0},
-        {0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 0},
-        {0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 0},
-        {0, 1, 1, 1, 1, 5, 5, 5, 5, 5, 0},
-        {0, 0, 1, 1, 1, 5, 5, 5, 5, 5, 0},
-        {0, 1, 1, 1, 1, 3, 3, 3, 3, 3, 0},
-        {0, 0, 1, 1, 1, 3, 3, 3, 3, 0, 0},
-        {0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+
+    /*public int[,] _heightmap =
+    {
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,2,2,2,2,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,4,4,4,4,4,4,4,4,4,4,4,4,4,4,2,2,2,2,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,4,4,4,4,4,4,4,4,4,4,4,4,2,2,2,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,4,4,4,4,4,4,4,4,4,4,4,2,2,2,8,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,4,4,4,4,4,4,4,4,4,4,2,2,2,8,8,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,4,4,4,4,4,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,4,4,4,4,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,4,4,4,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,4,4,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,4,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {4,4,4,4,4,4,4,4,4,4,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {4,4,4,4,4,4,4,4,4,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {4,4,4,4,4,4,4,4,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {4,4,4,4,4,4,4,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {4,4,4,4,4,4,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {4,4,4,4,4,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {4,4,4,4,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {4,4,4,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {4,4,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {4,4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {4,4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {4,4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {4,4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {4,2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {2,2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8},
+        {8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8}
+
     };*/
     
-    public int[,] _heightmap = 
+    /*public int[,] _heightmap =
     {
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,4,0,0,0,4,0,0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,0},
-        {0,0,0,4,0,0,0,4,0,0,0,0,0,0,0,0,0,0,4,0,4,0,0,0,0},
-        {0,0,0,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,4,0,0,4,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,2,0,2,0,0,4,4,4,4,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,4,4,4,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,4,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,4,4,4,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,4,0,4,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,2,0,2,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,4,4,0,0,0,0,0,2,2,2,0,0,0,0,0},
-        {0,0,0,0,2,2,2,0,0,0,0,4,4,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,2,0,0,0,0,0,0,4,4,4,4,4,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,2,0,0,0,0,0,0,4,0,0,0,4,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,2,2,2,2,0,0,2,4,4,4,4,4,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,2,0,0,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,4,4,4,4,4,0,2,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,4,0,0,0,4,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+        {4,4,4,2,2,2,2,8},
+        {4,4,2,2,2,2,8,8},
+        {2,2,2,8,8,8,8,8},
+        {2,2,8,8,8,8,8,8},
+        {2,8,8,8,8,8,8,8},
+        {8,8,8,8,8,8,8,8},
+        {8,8,8,8,8,8,8,8},
+        {8,8,8,8,8,8,8,8}
+
+    };*/
+    
+    public int[,] _heightmap =
+    {
+        {6, 6, 0},
+        {6, 2, 4},
+        {0, 4, 4},
+
     };
     
     //limitation: two diagonals cannot be adjacent
 
-    public int Size => 25;
+    public int Size => _heightmap.GetLength(0);
     
     public Material FloorMaterial;
     public Material WallMaterial;
 
     void Start()
     {
-        GenerateMesh(_heightmap);
+        GenerateMesh();
     }
     
     
 
 
-    public void GenerateMesh(int[,] heightmap)
+    public void GenerateMesh()
     {
         // deve-se começar pelo mais alto
         // as diagonais dos mais altos podem interferir com os mais baixos
         // entao as diagonais devem ser salvas pois uma diagonal do mais alto cria uma diagonal oposta no mais baixo
         // as diagonais de todos os niveis tem q ser salvas para os niveis abaixo saberem
         // se numa celula que vai virar diagonal, ja existe uma celula mais alta ocupando, entao ela nao vira diagonal
-        var existingHeights = GetExistingHeights(heightmap);
+        var existingHeights = GetExistingHeights(_heightmap);
+        var upperDiagonals = new Dictionary<(int, int), DiagonalData>();
         foreach (var height in existingHeights)
         {
-            var layer = FilterHeight(heightmap, height);
-            var diagonals = FindDiagonals(layer, height);
+            var layer = FilterHeight(_heightmap, height);
+            var diagonals = FindDiagonals(layer, height, upperDiagonals);
+
+            StringBuilder sb = new();
+            for (int i = 0; i < Size; ++i)
+            {
+                for (int j = 0; j < Size; ++j)
+                {
+                    sb.Append($"{layer[i, j]} ");
+                } 
+                sb.AppendLine();
+            }
+            Debug.Log($"{sb}");
+            
+            // Sometimes a full cell is forced to become diagonal by a higher height
+            // so we set the cell to 0 because it is already stored in diagonals
+            foreach (var diagonal in diagonals) layer[diagonal.Row, diagonal.Column] = 0;   // If a diagonal was created over a full cell, remove the full cell
+            
             var rectangles = CoverWithRectangles(layer);
             ApplyDiagonals(layer, diagonals, true);
             PrintGrid(layer);
@@ -90,6 +130,7 @@ public partial class HeightmapToMesh : MonoBehaviour
             //foreach (var rectangle in rectangleDatas) print(rectangle);
             BuildSurface(rectangleDatas, diagonals, height);
             //return;
+            foreach (var diagonal in diagonals) upperDiagonals[(diagonal.Row, diagonal.Column)] = diagonal;
         }
     }
 
@@ -101,7 +142,7 @@ public partial class HeightmapToMesh : MonoBehaviour
         {
             for (int j = 0; j < Size; ++j)
             {
-                if (heightmap[i, j] == 0) continue;
+                if (heightmap[i, j] is 0) continue;
                 existingHeights.Add(heightmap[i, j]);
             } 
         }
@@ -124,36 +165,55 @@ public partial class HeightmapToMesh : MonoBehaviour
         return filteredHeightmap;
     }
 
-    private List<DiagonalData> FindDiagonals(int[,] heightmap, int height)
+    private List<DiagonalData> FindDiagonals(int[,] grid, int height, Dictionary<(int, int), DiagonalData> upperDiagonals)
     {
         var diagonals = new List<DiagonalData>();
         for (int i = 0; i < Size; ++i)
         {
             for (int j = 0; j < Size; ++j)
             {
-                if (heightmap[i, j] != 0) continue;
-                if (_heightmap[i, j] > height) continue;    // Only check for diagonals in cells that are not occupied by a higher height
-
-                /*if (i == 8 && j == 4)
+                // If grid[i, j] is 1, there is a possible diagonal:
+                // If the cell [i, j] is part of a diagonal formed by a higher height,
+                // this height will become the other half of the diagonal and lock the cell
+                if (grid[i, j] is 1)
                 {
-                    StringBuilder sb = new();
-                    for (int r = -1; r <= 1; ++r)
+                    if (upperDiagonals.TryGetValue((i, j), out var diagonalData))   // This happens when a diagonal formed by an upper height forces the current height cell to also be diagonal)
                     {
-                        for (int c = -1; c <= 1; ++c)
-                        {
-                            sb.Append(heightmap[i + r, j + c]);
-                        }
-
-                        sb.AppendLine();
+                        diagonals.Add(new DiagonalData(i, j, height, diagonalData.Type.Opposite()));
                     }
-                    print(sb.ToString());
-                    print(CheckDiagonal(heightmap, i, j, 1, 1));
-                }*/
+                    continue;
+                }
                 
-                if (CheckDiagonal(heightmap, i, j, 1, 1)) diagonals.Add(new DiagonalData(i, j, EDiagonalType.TopRight));
-                else if (CheckDiagonal(heightmap, i, j, 1, -1)) diagonals.Add(new DiagonalData(i, j, EDiagonalType.TopLeft));
-                else if (CheckDiagonal(heightmap, i, j, -1, 1)) diagonals.Add(new DiagonalData(i, j, EDiagonalType.BottomRight));
-                else if (CheckDiagonal(heightmap, i, j, -1, -1)) diagonals.Add(new DiagonalData(i, j, EDiagonalType.BottomLeft));
+                //if (_heightmap[i, j] > height) continue;    // Only check for diagonals in cells that are not occupied by a higher height
+                
+                // If there is a possible diagonal, it is necessary to check if
+                // the cell [i, j] is part of a diagonal formed by a higher angle.
+                // If it is, the cell will be locked for the lower heights
+                bool previousDiagonalData = upperDiagonals.TryGetValue((i, j), out var data);
+                if (CheckDiagonal(grid, i, j, 1, 1))
+                {
+                    if (_heightmap[i, j] > height) continue; // Only check for diagonals in cells that are not occupied by a higher height
+                    diagonals.Add(new DiagonalData(i, j, height, EDiagonalType.TopRight));
+                    if (previousDiagonalData) _heightmap[i, j] = data.Height;   // Overwrite the height of the cell so that lower heights have no business with it
+                }
+                else if (CheckDiagonal(grid, i, j, 1, -1))
+                {
+                    if (_heightmap[i, j] > height) continue; // Only check for diagonals in cells that are not occupied by a higher height
+                    diagonals.Add(new DiagonalData(i, j, height, EDiagonalType.TopLeft));
+                    if (previousDiagonalData) _heightmap[i, j] = data.Height;   // Overwrite the height of the cell so that lower heights have no business with it
+                }
+                else if (CheckDiagonal(grid, i, j, -1, 1))
+                {
+                    if (_heightmap[i, j] > height) continue; // Only check for diagonals in cells that are not occupied by a higher height
+                    diagonals.Add(new DiagonalData(i, j, height, EDiagonalType.BottomRight));
+                    if (previousDiagonalData) _heightmap[i, j] = data.Height;   // Overwrite the height of the cell so that lower heights have no business with it
+                }
+                else if (CheckDiagonal(grid, i, j, -1, -1))
+                {
+                    if (_heightmap[i, j] > height) continue; // Only check for diagonals in cells that are not occupied by a higher height
+                    diagonals.Add(new DiagonalData(i, j, height, EDiagonalType.BottomLeft));
+                    if (previousDiagonalData) _heightmap[i, j] = data.Height;   // Overwrite the height of the cell so that lower heights have no business with it
+                }
             }
         }
 
@@ -322,6 +382,12 @@ public partial class HeightmapToMesh : MonoBehaviour
             triangles.Add(vertexIndexMap[v0]);
             triangles.Add(vertexIndexMap[v2]);
             triangles.Add(vertexIndexMap[v1]);
+        }
+        
+        if (vertices.Count == 0 || triangles.Count == 0)
+        {
+            Debug.Log("No vertices or triangles to create a mesh.");
+            return;
         }
 
         Mesh mesh = new Mesh();

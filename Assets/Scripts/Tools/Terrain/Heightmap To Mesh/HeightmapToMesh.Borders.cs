@@ -140,6 +140,12 @@ public partial class HeightmapToMesh
                 }
             }
         }
+        
+        if (_graph.Count is 0)
+        {
+            Debug.Log("No nodes were created in the graph. Check the grid data.");
+            return;
+        }
 
         FillAdjacentyList();
         RemoveInternalEdges(grid);
@@ -369,12 +375,12 @@ public partial class HeightmapToMesh
         {
             if (u.Column < v.Column)
             {
-                print("(1) AAAAAAAA " + u.Row + ", " + u.Column + " -> " + v.Row + ", " + v.Column);
+                //print("(1) AAAAAAAA " + u.Row + ", " + u.Column + " -> " + v.Row + ", " + v.Column);
                 return grid[u.Row, u.Column] is (int)EDiagonalType.BottomRight;
             }
             else
             {
-                print("(2) AAAAAAAA " + u.Row + ", " + u.Column + " -> " + v.Row + ", " + v.Column);
+                //print("(2) AAAAAAAA " + u.Row + ", " + u.Column + " -> " + v.Row + ", " + v.Column);
                 return grid[u.Row, u.Column - 1] is (int)EDiagonalType.TopRight;
             }
         }
@@ -382,12 +388,12 @@ public partial class HeightmapToMesh
         {
             if (u.Column < v.Column)
             {
-                print("(3) AAAAAAAA " + u.Row + ", " + u.Column + " -> " + v.Row + ", " + v.Column);
+                //print("(3) AAAAAAAA " + u.Row + ", " + u.Column + " -> " + v.Row + ", " + v.Column);
                 return grid[v.Row, u.Column] is (int)EDiagonalType.BottomLeft;
             }
             else
             {
-                print("(4) AAAAAAAA " + u.Row + ", " + u.Column + " -> " + v.Row + ", " + v.Column);
+                //print("(4) AAAAAAAA " + u.Row + ", " + u.Column + " -> " + v.Row + ", " + v.Column);
                 return grid[v.Row, v.Column] is (int)EDiagonalType.TopRight;
             }
         }
